@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Well Soon Anjali! ✨ From Poojan & Ishan</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sage: {
+                            50: '#f4f7f4',
+                            100: '#e3ebe3',
+                            200: '#c8d8c8',
+                            300: '#a3bea3',
+                            500: '#6f946f',
+                            600: '#5a7c5a',
+                            700: '#486348',
+                        },
+                        cream: {
+                            50: '#fdfbf7',
+                            100: '#f9f5ec',
+                            200: '#f3e8d7',
+                        },
+                        blush: {
+                            50: '#fdf2f4',
+                            100: '#fbe4e8',
+                            200: '#f7cad1',
+                            400: '#ee93a2',
+                            600: '#d85d73',
+                        },
+                        warmgold: '#e6c887',
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        handwritten: ['"Caveat"', 'cursive'],
+                    },
+                    animation: {
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-medium': 'float 5s ease-in-out infinite',
+                        'pulse-gentle': 'pulseGentle 3s ease-in-out infinite',
+                        'sway': 'sway 4s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(3deg)' },
+                        },
+                        pulseGentle: {
+                            '0%, 100%': { opacity: '0.9', transform: 'scale(1)' },
+                            '50%': { opacity: '1', transform: 'scale(1.02)' },
+                        },
+                        sway: {
+                            '0%, 100%': { transform: 'rotate(-4deg)' },
+                            '50%': { transform: 'rotate(4deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdfbf7;
+            color: #4a5568;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fdfbf7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c8d8c8;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a3bea3;
+        }
+
+        /* Glassmorphism styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 30px -10px rgba(111, 148, 111, 0.12);
+        }
+
+        .glass-card-interactive {
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .glass-card-interactive:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 38px -5px rgba(111, 148, 111, 0.2);
+        }
+
+        /* Background Particle Canvas */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen font-sans selection:bg-blush-200 selection:text-sage-700">
+
+    <!-- Background Particle Canvas -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Main Application Wrapper -->
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-16">
+
+        <!-- Top Header & Ambient Sound Controls -->
+        <header class="flex flex-wrap items-center justify-between gap-4 glass-card px-6 py-4 rounded-full">
+            <div class="flex items-center space-x-2">
+                <span class="w-3.5 h-3.5 rounded-full bg-blush-400 animate-ping"></span>
+                <span class="font-serif italic font-semibold text-sage-700 text-lg">For Dear Anjali 💖</span>
+            </div>
+            
+            <!-- Ambient Audio Synth Controls -->
+            <div class="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm">
+                <span class="text-gray-500 hidden md:inline"><i data-lucide="headphones" class="w-4 h-4 inline mr-1 text-sage-600"></i> Cozy Sounds:</span>
+                <button id="audioRain" onclick="toggleSound('rain')" class="px-3 py-1.5 rounded-full border border-sage-200 text-sage-700 hover:bg-sage-100 transition-colors flex items-center space-x-1.5 shadow-xs">
+                    <i data-lucide="cloud-rain" class="w-3.5 h-3.5"></i>
+                    <span>Gentle Rain</span>
+                </button>
+                <button id="audioFire" onclick="toggleSound('fire')" class="px-3 py-1.5 rounded-full border border-sage-200 text-sage-700 hover:bg-sage-100 transition-colors flex items-center space-x-1.5 shadow-xs">
+                    <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+                    <span>Campfire</span>
+                </button>
+                <button id="audioChords" onclick="toggleSound('chords')" class="px-3 py-1.5 rounded-full border border-sage-200 text-sage-700 hover:bg-sage-100 transition-colors flex items-center space-x-1.5 shadow-xs">
+                    <i data-lucide="music" class="w-3.5 h-3.5"></i>
+                    <span>Relaxing Chords</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Hero Header Section -->
+        <section class="text-center pt-6 pb-4 space-y-6">
+            <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-blush-100 text-blush-600 font-medium text-xs sm:text-sm tracking-wide shadow-sm">
+                <i data-lucide="sparkles" class="w-4 h-4 text-blush-400"></i>
+                <span>Sent With Endless Love From Poojan & Ishan</span>
+            </div>
+            
+            <h1 class="font-serif text-4xl sm:text-6xl font-bold text-sage-700 tracking-tight leading-tight">
+                Get Well Soon, Anjali! <span class="inline-block animate-sway">🌸✨</span>
+            </h1>
+            
+            <p class="max-w-2xl mx-auto text-base sm:text-lg text-gray-600 font-light leading-relaxed">
+                Dear Anjali, take a soft breath, get cozy in your blanket, and leave all the worry to us. Poojan & Ishan created this little pocket of sunshine just to brighten your day and remind you how special you are!
+            </p>
+
+            <!-- Interactive Action Buttons -->
+            <div class="pt-4 flex flex-wrap justify-center items-center gap-4">
+                <button onclick="sendVirtualHug(event)" class="group relative px-8 py-4 bg-gradient-to-r from-sage-500 to-sage-700 text-white font-semibold rounded-full shadow-lg shadow-sage-500/25 hover:shadow-xl hover:shadow-sage-500/35 hover:-translate-y-0.5 transition-all duration-300 flex items-center space-x-3 overflow-hidden">
+                    <i data-lucide="heart" class="w-5 h-5 fill-current text-blush-200 group-hover:scale-125 transition-transform"></i>
+                    <span class="text-lg">Receive Hug from Poojan & Ishan</span>
+                    <span class="absolute -right-2 top-0 bottom-0 w-8 bg-white/20 skew-x-12 group-hover:translate-x-[-220px] transition-transform duration-1000"></span>
+                </button>
+
+                <button onclick="serveWarmTea(event)" class="px-7 py-4 bg-cream-100 border border-warmgold/50 text-sage-700 font-medium rounded-full shadow-md hover:bg-cream-200 hover:-translate-y-0.5 transition-all duration-300 flex items-center space-x-3">
+                    <i data-lucide="coffee" class="w-5 h-5 text-amber-600"></i>
+                    <span>Brew Anjali's Comfort Tea</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Dynamic Pop-up Toast Container -->
+        <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-3 pointer-events-none"></div>
+
+        <!-- Anjali's Jar of Sunshine -->
+        <section class="glass-card rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-48 h-48 bg-warmgold/20 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-blush-200/30 rounded-full blur-2xl"></div>
+
+            <div class="max-w-xl mx-auto space-y-6 relative z-10">
+                <div class="inline-block p-4 bg-cream-100 rounded-full text-warmgold shadow-inner border border-warmgold/40">
+                    <i data-lucide="sun" class="w-10 h-10 animate-spin-slow"></i>
+                </div>
+                
+                <h2 class="font-serif text-3xl font-semibold text-sage-700">Anjali's Jar of Sunshine ☀️</h2>
+                <p class="text-gray-600 font-light text-sm sm:text-base">
+                    Whenever you're feeling down or tired, tap the jar below! Poojan & Ishan filled it with sweet wishes, funny jokes, and reminders for you.
+                </p>
+
+                <!-- Jar Graphic Container -->
+                <div onclick="drawSunshineNote()" class="cursor-pointer inline-block group my-4 transform transition-transform hover:scale-105 active:scale-95">
+                    <div class="relative w-40 h-52 sm:w-48 sm:h-60 mx-auto bg-white/50 border-4 border-amber-200/90 rounded-3xl shadow-xl flex flex-col items-center justify-between p-4 backdrop-blur-md">
+                        <!-- Jar Lid -->
+                        <div class="absolute -top-4 w-32 h-7 bg-amber-200 border-2 border-amber-300 rounded-lg shadow-sm flex items-center justify-center">
+                            <div class="w-20 h-1 bg-amber-400/60 rounded-full"></div>
+                        </div>
+                        <!-- Notes inside Jar -->
+                        <div class="mt-4 flex-1 w-full flex flex-wrap gap-2 items-center justify-center p-2 opacity-85 group-hover:opacity-100 transition-opacity">
+                            <span class="px-2.5 py-1 bg-blush-200 text-blush-700 text-xs rounded-md shadow-xs -rotate-6 font-medium">To Anjali ❤️</span>
+                            <span class="px-2 py-1 bg-amber-200 text-amber-800 text-xs rounded-md shadow-xs rotate-12">Poojan ✨</span>
+                            <span class="px-2 py-1 bg-sage-200 text-sage-800 text-xs rounded-md shadow-xs -rotate-3">Ishan 🌿</span>
+                            <span class="px-2.5 py-1 bg-cream-200 text-amber-900 text-xs rounded-md shadow-xs rotate-6 font-medium">Smile! 🌸</span>
+                        </div>
+                        <!-- Tag -->
+                        <div class="px-4 py-1 bg-amber-100 border border-amber-300 text-amber-900 rounded-full font-handwritten text-lg font-bold shadow-xs">
+                            Tap For Note 💌
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drawn Note Display Box -->
+                <div id="sunshineNoteBox" class="hidden min-h-[110px] p-6 bg-cream-50 rounded-2xl border border-warmgold/50 shadow-inner flex flex-col items-center justify-center space-y-2 animate-pulse-gentle">
+                    <p id="sunshineText" class="font-serif text-lg sm:text-xl text-sage-700 italic font-medium">
+                        "Anjali, rest up soon! The world is way too quiet without your energy!"
+                    </p>
+                    <span id="sunshineAuthor" class="text-xs text-amber-700 font-semibold uppercase tracking-wider">
+                        — From Poojan & Ishan
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Anjali's Recovery Checklist -->
+        <section class="space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="font-serif text-3xl font-semibold text-sage-700">Anjali's Recovery Checklist 📋</h2>
+                <p class="text-gray-500 text-sm">Gentle orders from Poojan & Ishan for your quick healing!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Checklist 1 -->
+                <div class="glass-card glass-card-interactive p-6 rounded-2xl space-y-4 border-l-4 border-l-sage-500">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-3 bg-sage-100 text-sage-700 rounded-xl">
+                                <i data-lucide="moon" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg text-sage-700">Unlimited Nap Time</h3>
+                                <p class="text-xs text-gray-500">Official permission granted</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl">😴</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Anjali, sleeping is officially your only job right now. Take as many cozy naps as you want today!
+                    </p>
+                    <div class="pt-2 border-t border-gray-100">
+                        <label class="flex items-center space-x-2 cursor-pointer text-xs text-sage-700 font-medium">
+                            <input type="checkbox" class="w-4 h-4 rounded text-sage-500 focus:ring-sage-300 accent-sage-500">
+                            <span>Completed a guilt-free afternoon nap</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Checklist 2 -->
+                <div class="glass-card glass-card-interactive p-6 rounded-2xl space-y-4 border-l-4 border-l-amber-400">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-3 bg-amber-100 text-amber-700 rounded-xl">
+                                <i data-lucide="cup-soda" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg text-sage-700">Hydrate & Sip Tea</h3>
+                                <p class="text-xs text-gray-500">Stay extra cozy</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl">🍵</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Drink plenty of water or warm tea. Imagine Poojan & Ishan reminding you to take a sip every hour!
+                    </p>
+                    <div class="pt-2 border-t border-gray-100">
+                        <label class="flex items-center space-x-2 cursor-pointer text-xs text-sage-700 font-medium">
+                            <input type="checkbox" class="w-4 h-4 rounded text-amber-500 focus:ring-amber-300 accent-amber-500">
+                            <span>Drank a full cup of water/tea</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Checklist 3 -->
+                <div class="glass-card glass-card-interactive p-6 rounded-2xl space-y-4 border-l-4 border-l-blush-400">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-3 bg-blush-100 text-blush-400 rounded-xl">
+                                <i data-lucide="tv" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg text-sage-700">Favorite Show Binge</h3>
+                                <p class="text-xs text-gray-500">Zero stress watch mode</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl">📺</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Turn on your favorite comedy show or feel-good movie. Lighthearted entertainment only!
+                    </p>
+                    <div class="pt-2 border-t border-gray-100">
+                        <label class="flex items-center space-x-2 cursor-pointer text-xs text-sage-700 font-medium">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blush-400 focus:ring-blush-200 accent-blush-400">
+                            <span>Watched something that made me laugh</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Checklist 4 -->
+                <div class="glass-card glass-card-interactive p-6 rounded-2xl space-y-4 border-l-4 border-l-emerald-400">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-3 bg-emerald-100 text-emerald-700 rounded-xl">
+                                <i data-lucide="shield-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg text-sage-700">Poojan & Ishan Duty</h3>
+                                <p class="text-xs text-gray-500">Leave worries to us</p>
+                            </div>
+                        </div>
+                        <span class="text-2xl">🤝</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Need food delivery, groceries, or just a quick call? Tell Poojan & Ishan—we've got it covered!
+                    </p>
+                    <div class="pt-2 border-t border-gray-100">
+                        <label class="flex items-center space-x-2 cursor-pointer text-xs text-sage-700 font-medium">
+                            <input type="checkbox" class="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-300 accent-emerald-500">
+                            <span>Let friends know if I need anything</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Personal Letter from Poojan & Ishan -->
+        <section class="glass-card rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+            <!-- Decorative Flower Graphic -->
+            <div class="absolute -right-10 -bottom-10 opacity-10 text-sage-700 pointer-events-none">
+                <i data-lucide="flower" class="w-64 h-64"></i>
+            </div>
+
+            <div class="max-w-2xl mx-auto space-y-6 relative z-10">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-blush-100 text-blush-400 rounded-full">
+                        <i data-lucide="mail-heart" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-sage-700">A Special Note For Anjali</h2>
+                        <p class="text-xs text-gray-500">Written with love by Poojan & Ishan</p>
+                    </div>
+                </div>
+
+                <div class="bg-cream-50 p-6 sm:p-8 rounded-2xl border border-cream-200 shadow-xs space-y-4 font-sans leading-relaxed text-gray-700">
+                    <p class="font-semibold text-sage-700 text-lg">Dearest Anjali,</p>
+                    
+                    <p>
+                        We just wanted to build this page to send you a great big smile and remind you how much you mean to both of us! Being under the weather is no fun at all, but please don't rush your recovery. Take all the time you need to rest and recharge.
+                    </p>
+                    
+                    <p>
+                        You are always the heart of our group with your warmth, laughter, and amazing energy. Things are definitely way too quiet without you around, so hurry up and get well soon! 
+                    </p>
+
+                    <p>
+                        Remember: drink your warm tea, stay tucked in your cozy blanket, and if you need absolutely anything at all—groceries, soup, or just someone to chat with—we are just one message away.
+                    </p>
+
+                    <div class="pt-4 border-t border-cream-200 flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <span class="block font-handwritten text-3xl text-sage-700">Sending you the warmest hugs,</span>
+                            <span class="font-serif italic text-sage-600 text-sm font-semibold">Poojan & Ishan ❤️</span>
+                        </div>
+                        <button onclick="copyWarmMessage()" class="px-4 py-2 bg-white border border-sage-200 hover:bg-sage-50 text-sage-700 text-xs font-medium rounded-lg transition-colors flex items-center space-x-1.5 shadow-xs">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span id="copyBtnText">Copy Letter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Footer -->
+        <footer class="text-center py-6 text-xs text-gray-400 space-y-2">
+            <p>Designed especially for Anjali by Poojan & Ishan ✨</p>
+            <p class="font-serif italic text-sage-500">"Get well soon Anjali! We can't wait to hang out again!"</p>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // -------------------------------------------------------------
+        // Background Particles
+        // -------------------------------------------------------------
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 8 + 3;
+                this.speedY = Math.random() * 0.4 + 0.1;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                const colors = ['rgba(163, 190, 163, ', 'rgba(247, 202, 209, ', 'rgba(230, 200, 135, '];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                if (this.y < -20) {
+                    this.y = canvas.height + 20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + this.opacity + ')';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = 'white';
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 35; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // -------------------------------------------------------------
+        // Virtual Hug & Toast Popups
+        // -------------------------------------------------------------
+        const anjaliQuotes = [
+            "Poojan & Ishan are sending you a warm wrapped-up hug, Anjali! 🤗",
+            "Anjali, permission granted to nap all day! 🌸",
+            "You are deeply missed today, Anjali! Get well soon! 💕",
+            "Drink your warm tea, Anjali! — Reminder from Poojan & Ishan 🍵",
+            "Sending healing energy and smiles to Anjali! ✨",
+            "Rest up, Anjali! Everything else can wait! 🌿"
+        ];
+
+        function sendVirtualHug(event) {
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.7 },
+                colors: ['#a3bea3', '#f7cad1', '#e6c887']
+            });
+
+            const randomQuote = anjaliQuotes[Math.floor(Math.random() * anjaliQuotes.length)];
+            showToast(randomQuote, "heart");
+        }
+
+        function serveWarmTea(event) {
+            confetti({
+                particleCount: 45,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#e6c887', '#f3e8d7']
+            });
+
+            showToast("A warm cup of chamomile tea freshly served for Anjali! ☕✨", "coffee");
+        }
+
+        function showToast(message, iconName) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'glass-card px-5 py-3.5 rounded-2xl shadow-xl flex items-center space-x-3 pointer-events-auto border-l-4 border-l-blush-400 transform transition-all duration-300 translate-y-4 opacity-0';
+            toast.innerHTML = `
+                <div class="p-2 bg-blush-100 text-blush-400 rounded-full">
+                    <i data-lucide="${iconName}" class="w-4 h-4"></i>
+                </div>
+                <span class="text-sm font-medium text-sage-700">${message}</span>
+            `;
+
+            toastContainer.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3800);
+        }
+
+        // -------------------------------------------------------------
+        // Anjali's Jar of Sunshine Logic
+        // -------------------------------------------------------------
+        const sunshineNotes = [
+            { note: "\"Anjali, your bright energy lights up every room! Get well soon so we can all hang out again!\"", author: "— Love, Poojan & Ishan" },
+            { note: "\"Remember Anjali: Resting today means more fun tomorrow. Don't stress about a single thing!\"", author: "— From Poojan" },
+            { note: "\"Sending you a giant bowl of virtual soup and the softest warm blanket, Anjali!\"", author: "— From Ishan" },
+            { note: "\"Anjali, you make our friend group complete. Recover quickly, we miss you!\"", author: "— Poojan & Ishan" },
+            { note: "\"Knock knock, Anjali! Who's there? Get well soon because we miss our favorite person!\"", author: "— Poojan & Ishan" },
+            { note: "\"Sending a little ray of sunshine your way to warm your heart today, Anjali! ☀️\"", author: "— With love, Poojan & Ishan" }
+        ];
+
+        let currentNoteIndex = -1;
+
+        function drawSunshineNote() {
+            const noteBox = document.getElementById('sunshineNoteBox');
+            const noteText = document.getElementById('sunshineText');
+            const noteAuthor = document.getElementById('sunshineAuthor');
+            
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * sunshineNotes.length);
+            } while (randomIndex === currentNoteIndex);
+            
+            currentNoteIndex = randomIndex;
+
+            confetti({
+                particleCount: 30,
+                spread: 50,
+                origin: { y: 0.5 },
+                colors: ['#e6c887', '#fdfbf7', '#f7cad1']
+            });
+
+            noteBox.classList.remove('hidden');
+            noteText.innerText = sunshineNotes[randomIndex].note;
+            noteAuthor.innerText = sunshineNotes[randomIndex].author;
+        }
+
+        // -------------------------------------------------------------
+        // Copy Letter Functionality
+        // -------------------------------------------------------------
+        function copyWarmMessage() {
+            const message = `Dearest Anjali,\n\nWe built this special page to send you a warm smile! Take all the time you need to rest and recover.\n\nSending you warm hugs,\nPoojan & Ishan ❤️`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(message);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = message;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+
+            const btnText = document.getElementById('copyBtnText');
+            btnText.innerText = "Copied Letter! ✨";
+            setTimeout(() => {
+                btnText.innerText = "Copy Letter";
+            }, 2500);
+        }
+
+        // -------------------------------------------------------------
+        // Web Audio API Synthesizer
+        // -------------------------------------------------------------
+        let audioCtx = null;
+        let activeSound = null;
+        let activeNode = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function toggleSound(type) {
+            initAudio();
+
+            ['audioRain', 'audioFire', 'audioChords'].forEach(id => {
+                document.getElementById(id).classList.remove('bg-sage-500', 'text-white');
+                document.getElementById(id).classList.add('text-sage-700');
+            });
+
+            if (activeSound === type) {
+                stopSound();
+                activeSound = null;
+                return;
+            }
+
+            stopSound();
+            activeSound = type;
+
+            const btnMap = { rain: 'audioRain', fire: 'audioFire', chords: 'audioChords' };
+            const activeBtn = document.getElementById(btnMap[type]);
+            activeBtn.classList.add('bg-sage-500', 'text-white');
+
+            if (type === 'rain') playRain();
+            else if (type === 'fire') playFire();
+            else if (type === 'chords') playAmbientChords();
+        }
+
+        function stopSound() {
+            if (activeNode) {
+                if (activeNode.stop) activeNode.stop();
+                if (activeNode.disconnect) activeNode.disconnect();
+                activeNode = null;
+            }
+        }
+
+        function playRain() {
+            const bufferSize = audioCtx.sampleRate * 2;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+
+            const whiteNoise = audioCtx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+            whiteNoise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+
+            whiteNoise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            whiteNoise.start();
+            activeNode = whiteNoise;
+        }
+
+        function playFire() {
+            const bufferSize = audioCtx.sampleRate * 2;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                const isCrackle = Math.random() > 0.985;
+                output[i] = isCrackle ? (Math.random() * 2 - 1) * 0.8 : (Math.random() * 2 - 1) * 0.05;
+            }
+
+            const fireSource = audioCtx.createBufferSource();
+            fireSource.buffer = noiseBuffer;
+            fireSource.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(500, audioCtx.currentTime);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+
+            fireSource.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            fireSource.start();
+            activeNode = fireSource;
+        }
+
+        function playAmbientChords() {
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc1.type = 'sine';
+            osc2.type = 'triangle';
+
+            osc1.frequency.setValueAtTime(261.63, audioCtx.currentTime); // C4
+            osc2.frequency.setValueAtTime(329.63, audioCtx.currentTime); // E4
+
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc1.start();
+            osc2.start();
+
+            activeNode = {
+                stop: () => {
+                    osc1.stop();
+                    osc2.stop();
+                },
+                disconnect: () => {
+                    osc1.disconnect();
+                    osc2.disconnect();
+                }
+            };
+        }
+    </script>
+</body>
+</html>
